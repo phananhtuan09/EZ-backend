@@ -88,14 +88,24 @@ $ batch> npm -v
 ### Installation
 
 1. Clone the repo
+
    ```sh
    git clone https://github.com/phananhtuan09/EZ-backend.git
    ```
-2. Install NPM packages
+
+2. Pull latest code
+
+```sh
+   git pull origin develop
+```
+
+3. Install NPM packages
+
    ```sh
    npm install
    ```
-3. Create file `.env` in the root folder
+
+4. Create file `.env` in the root folder
    ```js
    DATABASE_URL = "ENTER YOUR DATABASE MONGODB URL";
    ```
