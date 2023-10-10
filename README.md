@@ -94,7 +94,7 @@ $ batch> npm -v
 2. Pull latest code
 
 ```sh
-git pull origin develop
+  git pull origin develop
 ```
 
 3. Install NPM packages
