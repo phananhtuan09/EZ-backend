@@ -108,6 +108,7 @@ $ batch> npm -v
 4. Create file `.env` in the root folder
    ```js
    DATABASE_URL = "ENTER YOUR DATABASE MONGODB URL";
+   SERVER_PORT = "ENTER YOUR PORT";
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

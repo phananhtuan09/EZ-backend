@@ -1,38 +1,30 @@
 const express = require("express");
-const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
-
-//setting cors
-const corsOptions = {
-  origin: "http://localhost:3000",
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "Origin",
-    "X-Requested-With",
-    "Accept",
-    "x-client-key",
-    "x-client-token",
-    "x-client-secret",
-    "Authorization",
-  ],
-  credentials: true,
-};
-
-app.use(cors(corsOptions)); // Use this after the variable declaration
 require("dotenv").config();
 
+const corsOptions = require("./config/corsOptions");
 const errorMiddleware = require("./middleware/error");
+const credentials = require("./middleware/credentials");
 
+const app = express();
+
+// Handle options credentials check - before CORS!
+// and fetch cookies credentials requirement
+app.use(credentials);
+
+// Cors origin resource sharing
+app.use(cors(corsOptions));
+
+// Built-in middleware for json
 app.use(express.json());
+// Built-in middleware to handle urlencoded form data
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/api/test", (request, response) => {
-  response.json("Testing API...");
+// Routing
+app.get("/", (req, res) => {
+  res.json("Hello...");
 });
-
-app.use(cors(corsOptions));
 
 // Middleware for Errors
 app.use(errorMiddleware);
