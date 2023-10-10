@@ -61,6 +61,8 @@ Description for website
 Below is the list of frameworks/libraries used in the project
 
 - [![Node][Node.js]][NodeJS-url]
+- [![Express][Express.js]][ExpressJS-url]
+- [![MongoDB][MongoDB]][MongoDB-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -93,9 +95,9 @@ $ batch> npm -v
 
 2. Pull latest code
 
-```sh
-  git pull origin develop
-```
+   ```sh
+   git pull origin develop
+   ```
 
 3. Install NPM packages
 
@@ -177,7 +179,7 @@ Phan Anh Tuan - tuanp6905@gmail.com
 [JQuery-url]: https://jquery.com
 [NodeJS-url]: https://nodejs.org
 [Node.JS]: public/images/Logo/NodeJS_Logo.png
-[Express.JS]: https://expressjs.com/images/express-facebook-share.png
+[Express.JS]: public/images/Logo/Expressjs.png
 [ExpressJS-url]: https://expressjs.com/
-[MongoDB]: https://1000logos.net/wp-content/uploads/2020/08/MongoDB-Logo.jpg
+[MongoDB]: public/images/Logo/mongodb.png
 [MongoDB-url]: https://www.mongodb.com
