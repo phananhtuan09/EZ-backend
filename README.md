@@ -60,9 +60,9 @@ Description for website
 
 Below is the list of frameworks/libraries used in the project
 
-- [![Node][Node.js]][NodeJS-url]
-- [![Express][Express.js]][ExpressJS-url]
-- [![MongoDB][MongoDB]][MongoDB-url]
+- NodeJS
+- Express.js
+- MongoDB
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
