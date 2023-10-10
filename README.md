@@ -14,7 +14,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="public/images/Logo/LogoHome.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Elite Zone Project</h3>
@@ -61,8 +61,6 @@ Description for website
 Below is the list of frameworks/libraries used in the project
 
 - [![Node][Node.js]][NodeJS-url]
-- [![Express][Express.js]][Express-url]
-- [![MongoDB][MongoDB.js]][MongoDB-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -96,7 +94,7 @@ $ batch> npm -v
 2. Pull latest code
 
 ```sh
-   git pull origin develop
+git pull origin develop
 ```
 
 3. Install NPM packages
@@ -160,7 +158,7 @@ Phan Anh Tuan - tuanp6905@gmail.com
 [license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/images/screenshot.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
@@ -178,7 +176,7 @@ Phan Anh Tuan - tuanp6905@gmail.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com
 [NodeJS-url]: https://nodejs.org
-[Node.JS]: https://upload.wikimedia.org/wikipedia/vi/a/a7/Nodejs_logo_light.png
+[Node.JS]: public/images/Logo/NodeJS_Logo.png
 [Express.JS]: https://expressjs.com/images/express-facebook-share.png
 [ExpressJS-url]: https://expressjs.com/
 [MongoDB]: https://1000logos.net/wp-content/uploads/2020/08/MongoDB-Logo.jpg
