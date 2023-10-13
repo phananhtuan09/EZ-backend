@@ -6,8 +6,8 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const corsOptions = require("./config/corsOptions");
-const errorMiddleware = require("./middleware/error");
 const credentials = require("./middleware/credentials");
+const errorHandlers = require("./middleware/errorHandlers");
 
 const app = express();
 
@@ -35,7 +35,17 @@ app.get("/", (req, res) => {
   res.json("Hello...");
 });
 
-// Middleware for Errors
-app.use(errorMiddleware);
+// Handle Error 404 Not Found
+app.use(errorHandlers.notFound);
+
+/* Development Error Handler - Prints stack trace */
+if (process.env.NODE_ENV === "development") {
+  app.use(developmentErrors);
+}
+
+// Production error handler
+if (process.env.NODE_ENV === "production") {
+  app.use(productionErrors);
+}
 
 module.exports = app;
