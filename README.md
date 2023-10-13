@@ -116,13 +116,11 @@ This command will install all the required packages specified in the package.jso
 
 4. Create Your MongoDB Account and Database/Cluster
 
-<ul class="padded-list">
-  <li style={{
-     marginLeft:'20px'
-  }}>Create your own MongoDB account by visiting the MongoDB website and signing up for a new account.</li>
-  <li>Create a new database or cluster by following the instructions provided in the MongoDB documentation. Remember to note down the "Connect to your application URI" for the database, as you will need it later. Also, make sure to change <password> with your own password.</li>
-  <li>Add your current IP address to the MongoDB database's IP whitelist to allow connections (this is needed whenever your IP changes).</li>
-</ul>
+- Create your own MongoDB account by visiting the MongoDB website and signing up for a new account.
+
+- Create a new database or cluster by following the instructions provided in the MongoDB documentation. Remember to note down the "Connect to your application URI" for the database, as you will need it later. Also, make sure to change <password> with your own password.
+
+- Add your current IP address to the MongoDB database's IP whitelist to allow connections (this is needed whenever your ip changes).
 
 5. Create a .env file in the root folder (same level as server.js) and edit the content as follows:
 
