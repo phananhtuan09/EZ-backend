@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const path = require("path");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const corsOptions = require("./config/corsOptions");
@@ -18,8 +20,15 @@ app.use(cors(corsOptions));
 
 // Built-in middleware for json
 app.use(express.json());
+
+// Middleware for cookies
+app.use(cookieParser());
+
 // Built-in middleware to handle urlencoded form data
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Server static file
+app.use(express.static(path.join(__dirname, "/public")));
 
 // Routing
 app.get("/", (req, res) => {

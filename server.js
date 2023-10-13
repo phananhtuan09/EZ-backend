@@ -11,10 +11,8 @@ process.on("uncaughtException", (err) => {
 // Connecting to database
 connectDatabase();
 
-const server = app.listen(process.env.SERVER_PORT, () => {
-  console.log(
-    `Server is working on http://localhost:${process.env.SERVER_PORT}`
-  );
+const server = app.listen(process.env.SERVER_PORT || 3500, () => {
+  console.log(`Server running on port ${process.env.SERVER_PORT}`);
 });
 
 // Unhandled Promise Rejection
