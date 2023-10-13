@@ -1,4 +1,4 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+<!-- Elite Zone Project README -->
 
 <a name="readme-top"></a>
 
@@ -13,14 +13,14 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/phananhtuan09/EZ-backend">
     <img src="public/images/Logo/LogoHome.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Elite Zone Project</h3>
 
   <p align="center">
-    An awesome E-commerce website!
+    Describe your project in more detail here, including its purpose, features, and any screenshots or links to relevant visuals.
   </p>
 </div>
 
@@ -52,7 +52,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Description for website
+Describe your project in more detail here, including its purpose, features, and any screenshots or links to relevant visuals.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -70,20 +70,23 @@ Below is the list of frameworks/libraries used in the project
 
 ## Getting Started
 
-Follow these steps to run source code.
+Follow these steps to run the source code.
 
 ### Prerequisites
 
-Node Version Required
+List the required versions of Node and npm:
 
-```shell
-
-$ batch> node -v
-v18.18.0
-$ batch> npm -v
-9.8.1
-
+```sh
+npm install
 ```
+
+v18.18.0
+
+```sh
+npm -v
+```
+
+9.8.1
 
 ### Installation
 
@@ -91,7 +94,6 @@ $ batch> npm -v
 
    ```sh
    git clone https://github.com/phananhtuan09/EZ-backend.git
-   cd EZ-backend
    ```
 
    ```sh
@@ -120,7 +122,7 @@ This command will install all the required packages specified in the package.jso
 
 - Add your current IP address to the MongoDB database's IP whitelist to allow connections (this is needed whenever your ip changes)
 
-5. Create file `.env` in the root folder(located at the same level as the server.js file) and edit the content as below.
+5. Create a .env file in the root folder (same level as server.js) and edit the content as follows:
 
    ```js
    DATABASE_URL = "ENTER YOUR DATABASE MONGODB URL";
@@ -139,16 +141,15 @@ This command will install all the required packages specified in the package.jso
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+Contributions are welcome! If you have suggestions, please follow these steps:
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+Don't forget to give the project a star! Thanks for your contributions!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
