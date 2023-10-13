@@ -74,7 +74,7 @@ Follow these steps to run source code.
 
 ### Prerequisites
 
-Node Version
+Node Version Required
 
 ```shell
 
@@ -87,10 +87,15 @@ $ batch> npm -v
 
 ### Installation
 
-1. Clone the repo
+1. Clone the repository
 
    ```sh
    git clone https://github.com/phananhtuan09/EZ-backend.git
+   cd EZ-backend
+   ```
+
+   ```sh
+   cd EZ-backend
    ```
 
 2. Pull latest code
@@ -99,16 +104,33 @@ $ batch> npm -v
    git pull origin develop
    ```
 
-3. Install NPM packages
+3. Install Dependencies
 
    ```sh
    npm install
    ```
 
-4. Create file `.env` in the root folder
+This command will install all the required packages specified in the package.json file.
+
+4. Create Your MongoDB Account and Database/Cluster
+
+- Create your own MongoDB account by visiting the MongoDB website and signing up for a new account.
+
+- Create a new database or cluster by following the instructions provided in the MongoDB documentation. Remember to note down the "Connect to your application URI" for the database, as you will need it later. Also, make sure to change <password> with your own password
+
+- Add your current IP address to the MongoDB database's IP whitelist to allow connections (this is needed whenever your ip changes)
+
+5. Create file `.env` in the root folder(located at the same level as the server.js file) and edit the content as below.
+
    ```js
    DATABASE_URL = "ENTER YOUR DATABASE MONGODB URL";
    SERVER_PORT = "ENTER YOUR PORT";
+   ```
+
+6. Run the server
+
+   ```sh
+   npm run dev
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
