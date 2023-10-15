@@ -8,8 +8,12 @@ require("dotenv").config();
 const corsOptions = require("./config/corsOptions");
 const credentials = require("./middleware/credentials");
 const errorHandlers = require("./middleware/errorHandlers");
+const { infoLogger } = require("./middleware/logger");
 
 const app = express();
+
+// Middleware logger
+app.use(infoLogger);
 
 // Handle options credentials check - before CORS!
 // and fetch cookies credentials requirement

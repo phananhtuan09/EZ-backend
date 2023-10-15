@@ -1,3 +1,6 @@
+const { errorLogger, logger } = require("./logger");
+const responseMessage = require("../constants/responseMessage");
+
 /*
   Catch Errors Handler
 
@@ -22,9 +25,10 @@ const catchErrors = (fn) => {
   If we hit a route that is not found, we mark it as 404 and pass it along to the next error handler to display
 */
 const notFound = (req, res, next) => {
+  logger.error(`Request for ${req.url} not found`);
   res.status(404).json({
     success: false,
-    message: "Đường dẫn không hợp lệ",
+    message: responseMessage.PATH_NOT_FOUND,
     data: null,
     error: null,
   });
@@ -48,7 +52,7 @@ const developmentErrors = (err, req, res, next) => {
 
   res.status(500).json({
     success: false,
-    message: "Lỗi server",
+    message: responseMessage.ERROR_SERVER,
     data: null,
     error: errorDetails,
   });
@@ -60,9 +64,10 @@ const developmentErrors = (err, req, res, next) => {
   No stacktraces are leaked to admin
 */
 const productionErrors = (err, req, res, next) => {
+  errorLogger(err, req, res, next);
   res.status(500).json({
     success: false,
-    message: "Lỗi server",
+    message: responseMessage.ERROR_SERVER,
     data: null,
     error: err,
   });
