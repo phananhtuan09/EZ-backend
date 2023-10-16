@@ -1,5 +1,6 @@
 const winston = require("winston");
 const responseMessage = require("../constants/responseMessage");
+const logController = require("../controllers/logController");
 
 const { combine, timestamp, printf } = winston.format;
 
@@ -38,15 +39,24 @@ const logger = winston.createLogger({
   ],
 });
 
-const infoLogger = (req, res, next) => {
-  logger.info(`Received ${req.method} request for ${req.url}`);
+const infoLogger = async (req, res, next) => {
+  if (process.env.IS_WRITE_LOG_FILE === "true") {
+    logger.info(`Received ${req.method} request for ${req.url}`);
+  }
+
+  await logController.handleWriteLogDB(
+    `Received ${req.method} request for ${req.url}`
+  );
+
   next();
 };
 
 const errorLogger = (err, req, res, next) => {
-  logger.error(
-    `${err.name || "error"}: ${err.message || responseMessage.ERROR_SERVER}`
-  );
+  if (process.env.IS_WRITE_LOG_FILE === "true") {
+    logger.error(
+      `${err.name || "error"}: ${err.message || responseMessage.ERROR_SERVER}`
+    );
+  }
 };
 
 module.exports = {
