@@ -52,6 +52,7 @@
  *       success:
  *         type: boolean
  *       message:
+ *         type: string
  *       data:
  *         type: object
  *         properties:
@@ -93,6 +94,7 @@
  *       success:
  *         type: boolean
  *       message:
+ *         type: string
  *       data:
  *         type: object
  *         properties:
@@ -118,6 +120,7 @@
  *       success:
  *         type: boolean
  *       message:
+ *         type: string
  *       data:
  *         type: object
  *         properties:
