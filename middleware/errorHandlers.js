@@ -1,5 +1,6 @@
-const { errorLogger, logger } = require("./logger");
+const { logger } = require("./logger");
 const responseMessage = require("../constants/responseMessage");
+const logController = require("../controllers/logController");
 
 /*
   Catch Errors Handler
@@ -25,7 +26,10 @@ const catchErrors = (fn) => {
   If we hit a route that is not found, we mark it as 404 and pass it along to the next error handler to display
 */
 const notFound = (req, res, next) => {
-  logger.error(`Request for ${req.url} not found`);
+  if (process.env.IS_WRITE_LOG_FILE === "true") {
+    logger.error(`Request for ${req.url} not found`);
+  }
+
   res.status(404).json({
     success: false,
     message: responseMessage.PATH_NOT_FOUND,
@@ -39,8 +43,9 @@ const notFound = (req, res, next) => {
 
   In development we show good error messages so if we hit a syntax error or any other previously un-handled error, we can show good info on what happened
 */
-const developmentErrors = (err, req, res, next) => {
+const developmentErrors = async (err, req, res, next) => {
   err.stack = err.stack || "";
+
   const errorDetails = {
     message: err.message,
     status: err.status,
@@ -49,6 +54,12 @@ const developmentErrors = (err, req, res, next) => {
       "<mark>$&</mark>"
     ),
   };
+
+  if (process.env.IS_WRITE_LOG_FILE === "true") {
+    logger.error(`Error: ${errorDetails.message}`);
+  }
+
+  await logController.handleWriteLogDB(`Error: ${errorDetails.message}`);
 
   res.status(500).json({
     success: false,
@@ -63,8 +74,9 @@ const developmentErrors = (err, req, res, next) => {
 
   No stacktraces are leaked to admin
 */
-const productionErrors = (err, req, res, next) => {
-  errorLogger(err, req, res, next);
+const productionErrors = async (err, req, res, next) => {
+  await logController.handleWriteLogDB(`Error: ${errorDetails.message}`);
+
   res.status(500).json({
     success: false,
     message: responseMessage.ERROR_SERVER,
