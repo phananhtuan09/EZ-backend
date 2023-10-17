@@ -7,7 +7,7 @@ const connectDatabase = () => {
         useUnifiedTopology: true,
       })
       .then((data) => {
-        console.log("Connected to MongoDB");
+        console.log("Connected to mongodb successfully!");
       });
   } catch (error) {
     console.log(error);

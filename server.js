@@ -12,7 +12,10 @@ process.on("uncaughtException", (err) => {
 connectDatabase();
 
 const server = app.listen(process.env.SERVER_PORT || 3500, () => {
-  console.log(`Server running on port ${process.env.SERVER_PORT}`);
+  console.log(`Server is working on port ${process.env.SERVER_PORT}`);
+  console.log(
+    `To testing api visit link:http://localhost:${process.env.SERVER_PORT}/swagger`
+  );
 });
 
 // Unhandled Promise Rejection
