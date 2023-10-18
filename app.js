@@ -3,12 +3,16 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUI = require("swagger-ui-express");
 require("dotenv").config();
 
 const corsOptions = require("./config/corsOptions");
 const credentials = require("./middleware/credentials");
 const errorHandlers = require("./middleware/errorHandlers");
 const { infoLogger } = require("./middleware/logger");
+const swaggerOptions = require("./config/swaggerOptions");
+const authRouter = require("./routes/authRouter");
 
 const app = express();
 
@@ -35,8 +39,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/public")));
 
 // Routing
-app.get("/", (req, res) => {
-  res.json("Hello...");
+app.use("/api", authRouter);
+
+// Config swagger
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+app.use("/swagger", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+
+// Testing server
+app.use("/", (req, res) => {
+  res.status(201).json({
+    success: true,
+    message: "Welcome EliteZone API",
+    data: null,
+    error: null,
+  });
 });
 
 // Handle Error 404 Not Found
