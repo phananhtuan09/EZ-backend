@@ -1,4 +1,8 @@
 const express = require("express");
+
+const authController = require("../controllers/authController");
+const { catchErrors } = require("../middleware/errorHandlers");
+
 const router = express.Router();
 
 router.post("/login", (req, res) => {
@@ -11,15 +15,7 @@ router.post("/login", (req, res) => {
   });
 });
 
-router.post("/register", (req, res) => {
-  // Implement registration logic here
-  res.status(201).json({
-    success: true,
-    message: "User successfully registered",
-    data: null,
-    error: null,
-  });
-});
+router.post("/register", catchErrors(authController.handleRegister));
 
 router.post("/logout", (req, res) => {
   // Implement logout logic here

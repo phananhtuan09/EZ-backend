@@ -1,5 +1,4 @@
 const app = require("./app");
-const connectDatabase = require("./config/connectDatabase");
 
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
@@ -8,15 +7,14 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
-// Connecting to database
-connectDatabase();
-
 const server = app.listen(process.env.SERVER_PORT || 3500, () => {
   console.log(`Server is working on port ${process.env.SERVER_PORT}`);
   console.log(
     `To testing api visit link:http://localhost:${process.env.SERVER_PORT}/swagger`
   );
 });
+
+server.setTimeout(50000);
 
 // Unhandled Promise Rejection
 process.on("unhandledRejection", (err) => {

@@ -13,6 +13,7 @@ const errorHandlers = require("./middleware/errorHandlers");
 const { infoLogger } = require("./middleware/logger");
 const swaggerOptions = require("./config/swaggerOptions");
 const authRouter = require("./routes/authRouter");
+const imageRouter = require("./routes/imageRouter");
 
 const app = express();
 
@@ -40,32 +41,23 @@ app.use(express.static(path.join(__dirname, "/public")));
 
 // Routing
 app.use("/api", authRouter);
+app.use("/api", imageRouter);
 
 // Config swagger
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 app.use("/swagger", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
-
-// Testing server
-app.use("/", (req, res) => {
-  res.status(201).json({
-    success: true,
-    message: "Welcome EliteZone API",
-    data: null,
-    error: null,
-  });
-});
 
 // Handle Error 404 Not Found
 app.use(errorHandlers.notFound);
 
 /* Development Error Handler - Prints stack trace */
 if (process.env.NODE_ENV === "development") {
-  app.use(developmentErrors);
+  app.use(errorHandlers.developmentErrors);
 }
 
 // Production error handler
 if (process.env.NODE_ENV === "production") {
-  app.use(productionErrors);
+  app.use(errorHandlers.productionErrors);
 }
 
 module.exports = app;
