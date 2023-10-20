@@ -86,8 +86,6 @@
  *         type: string
  *       email:
  *         type: string
- *       avatar:
- *         type: string
  *
  *   responseRegister:
  *     properties:
@@ -105,8 +103,6 @@
  *           phone:
  *             type: string
  *           email:
- *            type: string
- *           avatar:
  *            type: string
  *           role:
  *             type: object

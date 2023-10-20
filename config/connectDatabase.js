@@ -1,16 +1,13 @@
-const mongoose = require("mongoose");
+const mysql = require("mysql2");
 
-const connectDatabase = () => {
-  try {
-    mongoose
-      .connect(process.env.DATABASE_URL, {
-        useUnifiedTopology: true,
-      })
-      .then((data) => {
-        console.log("Connected to mongodb successfully!");
-      });
-  } catch (error) {
-    console.log(error);
-  }
-};
-module.exports = connectDatabase;
+// Create the connection pool
+const pool = mysql
+  .createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  })
+  .promise();
+
+module.exports = pool;

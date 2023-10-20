@@ -1,13 +1,9 @@
-const Log = require("../model/Log");
-const { format } = require("date-fns");
+const db = require("../config/connectDatabase");
 
 const handleWriteLogDB = async (message) => {
   if (message && process.env.IS_WRITE_LOG_DB === "true") {
     try {
-      const results = await Log.create({
-        message,
-        timestamp: `${format(new Date(), "yyyy-MM-dd HH:mm:ss")}`,
-      });
+      await db.query("INSERT INTO logs (message) VALUES (?)", message);
     } catch (error) {
       console.log(error);
     }
