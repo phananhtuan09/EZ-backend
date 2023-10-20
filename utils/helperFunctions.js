@@ -57,6 +57,10 @@ const isValidPhone = (phone) => {
   return regexPhoneNumber.test(phone.toString());
 };
 
+const isValidEmailOrPhone = (emailOrPhone) => {
+  return isValidEmail(emailOrPhone) || isValidPhone(emailOrPhone);
+};
+
 // Translate parameter names for show end user
 const translateParams = (params) => {
   if (Array.isArray(params) && params.length > 0) {
@@ -92,21 +96,19 @@ const handleGenerateErrorForDev = (arrayParams, typeError) => {
 
 // Format error and message for params request
 const handleGenerateErrorResponse = (arrayParams, typeError) => {
-  if (Array.isArray(arrayParams) && arrayParams.length > 0) {
-    const formatArray = translateParams(arrayParams);
+  const removeDuplicate = [...new Set(arrayParams)];
+  if (Array.isArray(removeDuplicate) && removeDuplicate.length > 0) {
+    const formatArray = translateParams(removeDuplicate);
     const formatText = capitalizeFirstLetter(formatArray.join(", ").trim());
     return {
       message:
         formatText +
         " " +
         (enumParamsRequest.typeErrorTranslate[typeError] || "không hợp lệ"),
-      error: handleGenerateErrorForDev(arrayParams, typeError) || null,
+      error: handleGenerateErrorForDev(removeDuplicate, typeError) || null,
     };
   }
-  return {
-    message: arrayParams,
-    error: typeError,
-  };
+  return {};
 };
 
 // Check params request is Valid
@@ -120,11 +122,14 @@ const handleShowErrorParamsInValid = (params) => {
         const { type, value, required, customValidate } = params[item];
 
         if (required && !checkRequired(value)) {
+          // Check is empty params
           paramsRequiredError.push(item);
         } else if (type && !checkTypeValue(value, type)) {
+          // Check is valid type params
           paramsTypeError.push(item);
         } else if (Array.isArray(customValidate) && customValidate.length > 0) {
           customValidate.forEach((validate) => {
+            // Execute custom validate for params
             if (!validate(value)) {
               paramsTypeError.push(item);
             }
@@ -133,10 +138,16 @@ const handleShowErrorParamsInValid = (params) => {
       });
     }
     if (paramsRequiredError.length > 0) {
-      return handleGenerateErrorResponse(paramsRequiredError, "requiredError");
+      return handleGenerateErrorResponse(
+        paramsRequiredError,
+        enumParamsRequest.typeErrorKey.requiredError
+      );
     }
     if (paramsTypeError.length > 0) {
-      return handleGenerateErrorResponse(paramsTypeError, "typeError");
+      return handleGenerateErrorResponse(
+        paramsTypeError,
+        enumParamsRequest.typeErrorKey.typeValueError
+      );
     }
   }
   return {};
@@ -176,7 +187,10 @@ const handleShowErrorParamsDuplicate = (params1, params2) => {
     if (Array.isArray(keys) && keys.length > 0) {
       const duplicateParams = findDuplicateParamByValue(params1, params2);
       if (Array.isArray(duplicateParams) && duplicateParams.length > 0) {
-        return handleGenerateErrorResponse(duplicateParams, "duplicateError");
+        return handleGenerateErrorResponse(
+          duplicateParams,
+          enumParamsRequest.typeErrorKey.duplicateError
+        );
       }
     }
   }
@@ -189,4 +203,5 @@ module.exports = {
   generateUniqueID,
   isValidEmail,
   isValidPhone,
+  isValidEmailOrPhone,
 };

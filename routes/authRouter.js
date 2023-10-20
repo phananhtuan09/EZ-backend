@@ -5,15 +5,7 @@ const { catchErrors } = require("../middleware/errorHandlers");
 
 const router = express.Router();
 
-router.post("/login", (req, res) => {
-  // Implement login logic here
-  res.status(200).json({
-    success: true,
-    message: "User successfully logged in",
-    data: null,
-    error: null,
-  });
-});
+router.post("/login", catchErrors(authController.handleLogin));
 
 router.post("/register", catchErrors(authController.handleRegister));
 

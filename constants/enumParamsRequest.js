@@ -1,17 +1,29 @@
 const paramsTranslateEnum = {
   email: "email",
   phone: "số điện thoại",
-  userName: "Họ và tên",
+  userName: "họ và tên",
   password: "mật khẩu",
+  emailOrPhone: "email hoặc số điện thoại",
+};
+
+const typeErrorKey = {
+  requiredError: "requiredError",
+  typeValueError: "typeValueError",
+  duplicateError: "duplicateError",
+  notFoundError: "notFoundError",
+  unauthorized: "unauthorized",
 };
 
 const typeErrorTranslate = {
   requiredError: "là trường bắt buộc",
-  typeError: "là trường không hợp lệ",
+  typeValueError: "là trường không hợp lệ",
   duplicateError: "đã tồn tại",
+  notFoundError: "không tồn tại",
+  unauthorized: "không có quyền",
 };
 
 module.exports = {
   typeErrorTranslate,
   paramsTranslateEnum,
+  typeErrorKey,
 };
