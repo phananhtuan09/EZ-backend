@@ -12,6 +12,7 @@ const typeErrorKey = {
   duplicateError: "duplicateError",
   notFoundError: "notFoundError",
   unauthorized: "unauthorized",
+  lengthError: "lengthError",
 };
 
 const typeErrorTranslate = {
@@ -20,6 +21,7 @@ const typeErrorTranslate = {
   duplicateError: "đã tồn tại",
   notFoundError: "không tồn tại",
   unauthorized: "không có quyền",
+  lengthError: "là trường có độ dài không hợp lệ",
 };
 
 module.exports = {

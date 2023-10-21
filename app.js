@@ -51,6 +51,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Server static file
 app.use(express.static(path.join(__dirname, "/public")));
 
+// Config swagger
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+app.use("/swagger", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+
 // Routing
 app.use("/api", authRouter);
 
@@ -59,10 +63,6 @@ app.use(verifyAccessToken);
 
 // Protected routes
 app.use("/api", imageRouter);
-
-// Config swagger
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
-app.use("/swagger", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 // Handle Error 404 Not Found
 app.use(errorHandlers.notFound);

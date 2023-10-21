@@ -47,18 +47,44 @@ const checkTypeValue = (value, expectedType) => {
   return false;
 };
 
-const isValidEmail = (email) => {
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  return emailRegex.test(email.toString().toLowerCase());
-};
-
-const isValidPhone = (phone) => {
-  const regexPhoneNumber = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
-  return regexPhoneNumber.test(phone.toString());
-};
-
-const isValidEmailOrPhone = (emailOrPhone) => {
-  return isValidEmail(emailOrPhone) || isValidPhone(emailOrPhone);
+const customValidateParamsRequest = {
+  isEmailValid(email) {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return {
+      typeError: enumParamsRequest.typeErrorKey.typeValueError,
+      isValid: emailRegex.test(email.toString().toLowerCase()),
+    };
+  },
+  isPhoneValid(phone) {
+    const regexPhoneNumber = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
+    return {
+      typeError: enumParamsRequest.typeErrorKey.typeValueError,
+      isValid: regexPhoneNumber.test(phone.toString()),
+    };
+  },
+  isEmailOrPhoneValid(emailOrPhone) {
+    return {
+      typeError: enumParamsRequest.typeErrorKey.typeValueError,
+      isValid:
+        customValidateParamsRequest.isEmailValid(emailOrPhone).isValid ||
+        customValidateParamsRequest.isPhoneValid(emailOrPhone).isValid,
+    };
+  },
+  isLengthValid(text, minLength = 4, maxLength = 255) {
+    return {
+      typeError: enumParamsRequest.typeErrorKey.lengthError,
+      isValid: text.length >= minLength && text.length <= maxLength,
+    };
+  },
+  isPasswordValid(password) {
+    //Password must have more than 8 characters, at least 1 lowercase letter, 1 uppercase letter, 1 number, 1 special character
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{9,}$/;
+    return {
+      typeError: enumParamsRequest.typeErrorKey.typeValueError,
+      isValid: regex.test(password),
+    };
+  },
 };
 
 // Translate parameter names for show end user
@@ -115,6 +141,7 @@ const handleGenerateErrorResponse = (arrayParams, typeError) => {
 const handleShowErrorParamsInValid = (params) => {
   const paramsRequiredError = [];
   const paramsTypeError = [];
+  const paramsLengthError = [];
   if (params && typeof params === "object") {
     const keys = Object.keys(params);
     if (Array.isArray(keys) && keys.length > 0) {
@@ -130,19 +157,42 @@ const handleShowErrorParamsInValid = (params) => {
         } else if (Array.isArray(customValidate) && customValidate.length > 0) {
           customValidate.forEach((validate) => {
             // Execute custom validate for params
-            if (!validate(value)) {
+            const resultTest = validate(value);
+            if (
+              !resultTest.isValid &&
+              resultTest.typeError ===
+                enumParamsRequest.typeErrorKey.typeValueError
+            ) {
               paramsTypeError.push(item);
+            }
+
+            if (
+              !resultTest.isValid &&
+              resultTest.typeError ===
+                enumParamsRequest.typeErrorKey.lengthError
+            ) {
+              paramsLengthError.push(item);
             }
           });
         }
       });
     }
+    // Error required
     if (paramsRequiredError.length > 0) {
       return handleGenerateErrorResponse(
         paramsRequiredError,
         enumParamsRequest.typeErrorKey.requiredError
       );
     }
+    // Error length error
+    if (paramsLengthError.length > 0) {
+      return handleGenerateErrorResponse(
+        paramsLengthError,
+        enumParamsRequest.typeErrorKey.lengthError
+      );
+    }
+
+    // Error type error
     if (paramsTypeError.length > 0) {
       return handleGenerateErrorResponse(
         paramsTypeError,
@@ -201,7 +251,5 @@ module.exports = {
   handleShowErrorParamsInValid,
   handleShowErrorParamsDuplicate,
   generateUniqueID,
-  isValidEmail,
-  isValidPhone,
-  isValidEmailOrPhone,
+  customValidateParamsRequest,
 };

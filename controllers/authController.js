@@ -2,9 +2,7 @@ const {
   handleShowErrorParamsInValid,
   handleShowErrorParamsDuplicate,
   generateUniqueID,
-  isValidEmail,
-  isValidPhone,
-  isValidEmailOrPhone,
+  customValidateParamsRequest,
 } = require("../utils/helperFunctions");
 const responseMessage = require("../constants/responseMessage");
 const db = require("../config/connectDatabase");
@@ -22,23 +20,34 @@ const handleRegister = async (req, res) => {
       type: "string",
       value: userName,
       required: true,
+      customValidate: [customValidateParamsRequest.isLengthValid],
     },
     password: {
       type: "string",
       value: password,
       required: true,
+      customValidate: [
+        customValidateParamsRequest.isLengthValid,
+        customValidateParamsRequest.isPasswordValid,
+      ],
     },
     phone: {
       type: "string",
       value: phone,
       required: true,
-      customValidate: [isValidPhone],
+      customValidate: [
+        customValidateParamsRequest.isLengthValid,
+        customValidateParamsRequest.isPhoneValid,
+      ],
     },
     email: {
       type: "string",
       value: email,
       required: true,
-      customValidate: [isValidEmail],
+      customValidate: [
+        customValidateParamsRequest.isLengthValid,
+        customValidateParamsRequest.isEmailValid,
+      ],
     },
   });
 
@@ -96,7 +105,7 @@ const handleRegister = async (req, res) => {
       //  Create new user
       const [insertInfo] = await db.query(
         "INSERT INTO users (userID, userName, password, phone, email) VALUES(?, ?, ?, ?, ?)",
-        [newUserID, userName, hashedPassword, phone, email]
+        [newUserID, userName, hashedPassword, phone, email.toLowerCase()]
       );
 
       if (insertInfo && insertInfo.affectedRows) {
@@ -137,7 +146,7 @@ const handleRegister = async (req, res) => {
               userID: newUserID,
               userName: userName,
               phone: phone,
-              email: email,
+              email: email.toLowerCase(),
               role: {},
               accessToken: `Bearer ${accessToken}`,
             },
@@ -171,12 +180,19 @@ const handleLogin = async (req, res) => {
       type: "string",
       value: emailOrPhone,
       required: true,
-      customValidate: [isValidEmailOrPhone],
+      customValidate: [
+        customValidateParamsRequest.isLengthValid,
+        customValidateParamsRequest.isEmailOrPhoneValid,
+      ],
     },
     password: {
       type: "string",
       value: password,
       required: true,
+      customValidate: [
+        customValidateParamsRequest.isLengthValid,
+        customValidateParamsRequest.isPasswordValid,
+      ],
     },
   });
 
@@ -192,7 +208,7 @@ const handleLogin = async (req, res) => {
   try {
     const [matchUser] = await db.query(
       "SELECT * FROM users WHERE email = ? OR phone = ? LIMIT 1",
-      [emailOrPhone, emailOrPhone]
+      [emailOrPhone.toLowerCase(), emailOrPhone.toLowerCase()]
     );
     if (!Array.isArray(matchUser) || matchUser.length === 0) {
       // Email or user not exist in DB
