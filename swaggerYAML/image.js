@@ -40,6 +40,8 @@
  * /api/updateAvatar:
  *   post:
  *     tags: [Image]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:

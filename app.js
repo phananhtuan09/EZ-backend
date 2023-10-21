@@ -14,6 +14,7 @@ const { infoLogger } = require("./middleware/logger");
 const swaggerOptions = require("./config/swaggerOptions");
 const authRouter = require("./routes/authRouter");
 const imageRouter = require("./routes/imageRouter");
+const verifyAccessToken = require("./middleware/verifyAccessToken");
 
 const app = express();
 
@@ -28,7 +29,18 @@ app.use(credentials);
 app.use(cors(corsOptions));
 
 // Built-in middleware for json
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, res, buf, encoding) => {
+      try {
+        JSON.parse(buf);
+      } catch (error) {
+        // Handle request data not valid JSON
+        req.typeError = "Invalid JSON";
+      }
+    },
+  })
+);
 
 // Middleware for cookies
 app.use(cookieParser());
@@ -39,13 +51,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Server static file
 app.use(express.static(path.join(__dirname, "/public")));
 
-// Routing
-app.use("/api", authRouter);
-app.use("/api", imageRouter);
-
 // Config swagger
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 app.use("/swagger", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+
+// Routing
+app.use("/api", authRouter);
+
+// Verify Access Token before handle logic
+app.use(verifyAccessToken);
+
+// Protected routes
+app.use("/api", imageRouter);
 
 // Handle Error 404 Not Found
 app.use(errorHandlers.notFound);

@@ -41,6 +41,17 @@ const notFound = (req, res, next) => {
   In development we show good error messages so if we hit a syntax error or any other previously un-handled error, we can show good info on what happened
 */
 const developmentErrors = (err, req, res, next) => {
+  if (req.typeError === "Invalid JSON") {
+    return res.status(400).json({
+      success: false,
+      message: "Dữ liệu đầu vào không hợp lệ",
+      data: null,
+      error: {
+        typeError: req.typeError,
+      },
+    });
+  }
+
   err.stack = err.stack || "";
   const errorDetails = {
     message: err.message,
@@ -65,6 +76,14 @@ const developmentErrors = (err, req, res, next) => {
   No stacktraces are leaked to admin
 */
 const productionErrors = (err, req, res, next) => {
+  if (req.errorJSON) {
+    return res.status(400).json({
+      success: false,
+      message: "Dữ liệu đầu vào không hợp lệ",
+      data: null,
+      error: req.errorMessage,
+    });
+  }
   res.status(500).json({
     success: false,
     message: responseMessage.ERROR_SERVER,

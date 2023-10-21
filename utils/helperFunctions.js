@@ -47,14 +47,44 @@ const checkTypeValue = (value, expectedType) => {
   return false;
 };
 
-const isValidEmail = (email) => {
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  return emailRegex.test(email.toString().toLowerCase());
-};
-
-const isValidPhone = (phone) => {
-  const regexPhoneNumber = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
-  return regexPhoneNumber.test(phone.toString());
+const customValidateParamsRequest = {
+  isEmailValid(email) {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return {
+      typeError: enumParamsRequest.typeErrorKey.typeValueError,
+      isValid: emailRegex.test(email.toString().toLowerCase()),
+    };
+  },
+  isPhoneValid(phone) {
+    const regexPhoneNumber = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
+    return {
+      typeError: enumParamsRequest.typeErrorKey.typeValueError,
+      isValid: regexPhoneNumber.test(phone.toString()),
+    };
+  },
+  isEmailOrPhoneValid(emailOrPhone) {
+    return {
+      typeError: enumParamsRequest.typeErrorKey.typeValueError,
+      isValid:
+        customValidateParamsRequest.isEmailValid(emailOrPhone).isValid ||
+        customValidateParamsRequest.isPhoneValid(emailOrPhone).isValid,
+    };
+  },
+  isLengthValid(text, minLength = 4, maxLength = 255) {
+    return {
+      typeError: enumParamsRequest.typeErrorKey.lengthError,
+      isValid: text.length >= minLength && text.length <= maxLength,
+    };
+  },
+  isPasswordValid(password) {
+    //Password must have more than 8 characters, at least 1 lowercase letter, 1 uppercase letter, 1 number, 1 special character
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{9,}$/;
+    return {
+      typeError: enumParamsRequest.typeErrorKey.typeValueError,
+      isValid: regex.test(password),
+    };
+  },
 };
 
 // Translate parameter names for show end user
@@ -92,27 +122,26 @@ const handleGenerateErrorForDev = (arrayParams, typeError) => {
 
 // Format error and message for params request
 const handleGenerateErrorResponse = (arrayParams, typeError) => {
-  if (Array.isArray(arrayParams) && arrayParams.length > 0) {
-    const formatArray = translateParams(arrayParams);
+  const removeDuplicate = [...new Set(arrayParams)];
+  if (Array.isArray(removeDuplicate) && removeDuplicate.length > 0) {
+    const formatArray = translateParams(removeDuplicate);
     const formatText = capitalizeFirstLetter(formatArray.join(", ").trim());
     return {
       message:
         formatText +
         " " +
         (enumParamsRequest.typeErrorTranslate[typeError] || "không hợp lệ"),
-      error: handleGenerateErrorForDev(arrayParams, typeError) || null,
+      error: handleGenerateErrorForDev(removeDuplicate, typeError) || null,
     };
   }
-  return {
-    message: arrayParams,
-    error: typeError,
-  };
+  return {};
 };
 
 // Check params request is Valid
 const handleShowErrorParamsInValid = (params) => {
   const paramsRequiredError = [];
   const paramsTypeError = [];
+  const paramsLengthError = [];
   if (params && typeof params === "object") {
     const keys = Object.keys(params);
     if (Array.isArray(keys) && keys.length > 0) {
@@ -120,23 +149,55 @@ const handleShowErrorParamsInValid = (params) => {
         const { type, value, required, customValidate } = params[item];
 
         if (required && !checkRequired(value)) {
+          // Check is empty params
           paramsRequiredError.push(item);
         } else if (type && !checkTypeValue(value, type)) {
+          // Check is valid type params
           paramsTypeError.push(item);
         } else if (Array.isArray(customValidate) && customValidate.length > 0) {
           customValidate.forEach((validate) => {
-            if (!validate(value)) {
+            // Execute custom validate for params
+            const resultTest = validate(value);
+            if (
+              !resultTest.isValid &&
+              resultTest.typeError ===
+                enumParamsRequest.typeErrorKey.typeValueError
+            ) {
               paramsTypeError.push(item);
+            }
+
+            if (
+              !resultTest.isValid &&
+              resultTest.typeError ===
+                enumParamsRequest.typeErrorKey.lengthError
+            ) {
+              paramsLengthError.push(item);
             }
           });
         }
       });
     }
+    // Error required
     if (paramsRequiredError.length > 0) {
-      return handleGenerateErrorResponse(paramsRequiredError, "requiredError");
+      return handleGenerateErrorResponse(
+        paramsRequiredError,
+        enumParamsRequest.typeErrorKey.requiredError
+      );
     }
+    // Error length error
+    if (paramsLengthError.length > 0) {
+      return handleGenerateErrorResponse(
+        paramsLengthError,
+        enumParamsRequest.typeErrorKey.lengthError
+      );
+    }
+
+    // Error type error
     if (paramsTypeError.length > 0) {
-      return handleGenerateErrorResponse(paramsTypeError, "typeError");
+      return handleGenerateErrorResponse(
+        paramsTypeError,
+        enumParamsRequest.typeErrorKey.typeValueError
+      );
     }
   }
   return {};
@@ -176,7 +237,10 @@ const handleShowErrorParamsDuplicate = (params1, params2) => {
     if (Array.isArray(keys) && keys.length > 0) {
       const duplicateParams = findDuplicateParamByValue(params1, params2);
       if (Array.isArray(duplicateParams) && duplicateParams.length > 0) {
-        return handleGenerateErrorResponse(duplicateParams, "duplicateError");
+        return handleGenerateErrorResponse(
+          duplicateParams,
+          enumParamsRequest.typeErrorKey.duplicateError
+        );
       }
     }
   }
@@ -187,6 +251,5 @@ module.exports = {
   handleShowErrorParamsInValid,
   handleShowErrorParamsDuplicate,
   generateUniqueID,
-  isValidEmail,
-  isValidPhone,
+  customValidateParamsRequest,
 };

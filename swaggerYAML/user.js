@@ -39,10 +39,10 @@
  * definitions:
  *   requestBodyLogin:
  *     required:
- *       - userName
+ *       - emailOrPhone
  *       - password
  *     properties:
- *       userName:
+ *       emailOrPhone:
  *         type: string
  *       password:
  *         type: string
