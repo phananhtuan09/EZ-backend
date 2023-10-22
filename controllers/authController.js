@@ -288,7 +288,7 @@ const handleLogin = async (req, res) => {
           phone: matchUser[0].phone,
           email: matchUser[0].email,
           role: {},
-          accessToken: `Bearer ${accessToken}`,
+          accessToken,
         },
         error: null,
       });
