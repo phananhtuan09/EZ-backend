@@ -274,6 +274,11 @@ const handleLogin = async (req, res) => {
       { expiresIn: "3d" }
     );
 
+    const urlAvatar = await helperReturnURLImage(
+      matchUser[0].avatar,
+      typeImageStorage.avatar
+    );
+
     return res
       .status(200)
       .cookie("refreshToken", refreshToken, {
@@ -292,10 +297,7 @@ const handleLogin = async (req, res) => {
           email: matchUser[0].email,
           role: {},
           accessToken,
-          avatar: helperReturnURLImage(
-            matchUser[0].avatar,
-            typeImageStorage.avatar
-          ),
+          avatar: urlAvatar,
         },
         error: null,
       });

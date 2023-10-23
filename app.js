@@ -65,11 +65,8 @@ app.use("/swagger", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 // Routing
 app.use("/api", authRouter);
 
-// Verify Access Token before handle logic
-app.use(verifyAccessToken);
-
 // Protected routes
-app.use("/api", imageRouter);
+app.use("/api", verifyAccessToken, imageRouter);
 
 // Handle Error 404 Not Found
 app.use(errorHandlers.notFound);

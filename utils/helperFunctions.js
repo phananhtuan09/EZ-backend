@@ -1,3 +1,6 @@
+const fs = require("fs");
+const path = require("path");
+
 const enumParamsRequest = require("../constants/enumParamsRequest");
 const {
   typeImageStorage,
@@ -252,16 +255,34 @@ const handleShowErrorParamsDuplicate = (params1, params2) => {
 };
 
 // Param imageName is stored in DB
-const helperReturnURLImage = (imageName, typeImage) => {
-  if (imageName && typeof imageName === "string") {
-    switch (typeImage) {
-      case typeImageStorage.avatar:
-        return `${process.env.SERVER_HOST_URL}:${process.env.SERVER_PORT}/uploads/avatars/${imageName}`;
-      default:
-        return "";
+const helperReturnURLImage = async (imageName, typeImage) => {
+  return new Promise((resolve, reject) => {
+    if (imageName && typeof imageName === "string") {
+      if (typeImage === typeImageStorage.avatar) {
+        const imagePathInSource = path.join(
+          __dirname,
+          "..",
+          "/uploads/avatars",
+          imageName
+        );
+
+        // Check if the image file exists
+        fs.access(imagePathInSource, fs.constants.F_OK, (err) => {
+          if (err) {
+            // File doesn't exist
+            resolve("");
+          } else {
+            // File exists
+            resolve(
+              `${process.env.SERVER_HOST_URL}:${process.env.SERVER_PORT}/uploads/avatars/${imageName}`
+            );
+          }
+        });
+      }
+    } else {
+      resolve("");
     }
-  }
-  return "";
+  });
 };
 
 const returnMessageForMulter = (errorCode) => {

@@ -100,11 +100,15 @@ const handleUpdateAvatar = async (req, res) => {
     );
 
     if (updateUser.affectedRows) {
+      const urlAvatar = await helperReturnURLImage(
+        avatarName,
+        typeImageStorage.avatar
+      );
       return res.status(200).json({
         success: true,
         message: "Cập nhật ảnh đại diện thành công",
         data: {
-          avatar: helperReturnURLImage(avatarName, typeImageStorage.avatar),
+          avatar: urlAvatar,
         },
         error: null,
       });
