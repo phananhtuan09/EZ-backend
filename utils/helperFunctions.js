@@ -1,4 +1,8 @@
 const enumParamsRequest = require("../constants/enumParamsRequest");
+const {
+  typeImageStorage,
+  errorParamAvatar,
+} = require("../constants/enumImage");
 
 // Check if a value is required and not empty
 const checkRequired = (value) => {
@@ -247,9 +251,39 @@ const handleShowErrorParamsDuplicate = (params1, params2) => {
   return {};
 };
 
+// Param imageName is stored in DB
+const helperReturnURLImage = (imageName, typeImage) => {
+  if (imageName && typeof imageName === "string") {
+    switch (typeImage) {
+      case typeImageStorage.avatar:
+        return `${process.env.SERVER_HOST_URL}:${process.env.SERVER_PORT}/uploads/avatars/${imageName}`;
+      default:
+        return "";
+    }
+  }
+  return "";
+};
+
+const returnMessageForMulter = (errorCode) => {
+  switch (errorCode) {
+    case "LIMIT_FILE_SIZE":
+      return {
+        message: "Tệp tải lên quá lớn",
+        typeError: errorParamAvatar.invalidMaxSize,
+      };
+    default:
+      return {
+        message: "Tệp tải lên không hợp lệ",
+        typeError: "invalidFile",
+      };
+  }
+};
+
 module.exports = {
   handleShowErrorParamsInValid,
   handleShowErrorParamsDuplicate,
   generateUniqueID,
   customValidateParamsRequest,
+  helperReturnURLImage,
+  returnMessageForMulter,
 };

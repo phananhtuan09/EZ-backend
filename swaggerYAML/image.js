@@ -10,6 +10,8 @@
  *       file:
  *         type: string
  *         format: binary
+ *       userID:
+ *         type: string
  *
  *   responseUpdateAvatar:
  *     properties:

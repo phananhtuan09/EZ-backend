@@ -1,4 +1,7 @@
+const multer = require("multer");
+
 const responseMessage = require("../constants/responseMessage");
+const { returnMessageForMulter } = require("../utils/helperFunctions");
 
 /*
   Catch Errors Handler
@@ -35,23 +38,44 @@ const notFound = (req, res, next) => {
   });
 };
 
+const commonErrors = (err, req, res, next) => {
+  if (req.typeError === "Invalid JSON") {
+    return {
+      message: "Dữ liệu đầu vào không hợp lệ",
+      errorDetails: {
+        typeError: req.typeError,
+      },
+    };
+  }
+
+  if (err instanceof multer.MulterError) {
+    const { message, typeError } = returnMessageForMulter(err.code);
+    return {
+      message: message,
+      errorDetails: {
+        typeError: typeError,
+        paramsError: err.field || "file",
+      },
+    };
+  }
+  return null;
+};
+
 /*
   Development Error Handler
 
   In development we show good error messages so if we hit a syntax error or any other previously un-handled error, we can show good info on what happened
 */
 const developmentErrors = (err, req, res, next) => {
-  if (req.typeError === "Invalid JSON") {
+  const commonErrorsResults = commonErrors(err, req, res, next);
+  if (commonErrorsResults) {
     return res.status(400).json({
       success: false,
-      message: "Dữ liệu đầu vào không hợp lệ",
+      message: commonErrorsResults.message,
       data: null,
-      error: {
-        typeError: req.typeError,
-      },
+      error: commonErrorsResults.errorDetails,
     });
   }
-
   err.stack = err.stack || "";
   const errorDetails = {
     message: err.message,
@@ -62,7 +86,7 @@ const developmentErrors = (err, req, res, next) => {
     ),
   };
 
-  res.status(500).json({
+  return res.status(500).json({
     success: false,
     message: responseMessage.ERROR_SERVER,
     data: null,
@@ -76,14 +100,16 @@ const developmentErrors = (err, req, res, next) => {
   No stacktraces are leaked to admin
 */
 const productionErrors = (err, req, res, next) => {
-  if (req.errorJSON) {
+  const commonErrorsResults = commonErrors(err, req, res, next);
+  if (commonErrorsResults) {
     return res.status(400).json({
       success: false,
-      message: "Dữ liệu đầu vào không hợp lệ",
+      message: commonErrorsResults.message,
       data: null,
-      error: req.errorMessage,
+      error: commonErrorsResults.errorDetails,
     });
   }
+
   res.status(500).json({
     success: false,
     message: responseMessage.ERROR_SERVER,
