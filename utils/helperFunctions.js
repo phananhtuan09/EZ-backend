@@ -1,4 +1,11 @@
+const fs = require("fs");
+const path = require("path");
+
 const enumParamsRequest = require("../constants/enumParamsRequest");
+const {
+  typeImageStorage,
+  errorParamAvatar,
+} = require("../constants/enumImage");
 
 // Check if a value is required and not empty
 const checkRequired = (value) => {
@@ -247,9 +254,57 @@ const handleShowErrorParamsDuplicate = (params1, params2) => {
   return {};
 };
 
+// Param imageName is stored in DB
+const helperReturnURLImage = async (imageName, typeImage) => {
+  return new Promise((resolve, reject) => {
+    if (imageName && typeof imageName === "string") {
+      if (typeImage === typeImageStorage.avatar) {
+        const imagePathInSource = path.join(
+          __dirname,
+          "..",
+          "/uploads/avatars",
+          imageName
+        );
+
+        // Check if the image file exists
+        fs.access(imagePathInSource, fs.constants.F_OK, (err) => {
+          if (err) {
+            // File doesn't exist
+            resolve("");
+          } else {
+            // File exists
+            resolve(
+              `${process.env.SERVER_HOST_URL}:${process.env.SERVER_PORT}/uploads/avatars/${imageName}`
+            );
+          }
+        });
+      }
+    } else {
+      resolve("");
+    }
+  });
+};
+
+const returnMessageForMulter = (errorCode) => {
+  switch (errorCode) {
+    case "LIMIT_FILE_SIZE":
+      return {
+        message: "Tệp tải lên quá lớn",
+        typeError: errorParamAvatar.invalidMaxSize,
+      };
+    default:
+      return {
+        message: "Tệp tải lên không hợp lệ",
+        typeError: "invalidFile",
+      };
+  }
+};
+
 module.exports = {
   handleShowErrorParamsInValid,
   handleShowErrorParamsDuplicate,
   generateUniqueID,
   customValidateParamsRequest,
+  helperReturnURLImage,
+  returnMessageForMulter,
 };

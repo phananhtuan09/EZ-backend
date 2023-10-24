@@ -7,12 +7,12 @@ const paramsTranslateEnum = {
 };
 
 const typeErrorKey = {
-  requiredError: "requiredError",
-  typeValueError: "typeValueError",
-  duplicateError: "duplicateError",
-  notFoundError: "notFoundError",
+  requiredError: "required",
+  typeValueError: "typeValue",
+  duplicateError: "duplicate",
+  notFoundError: "notFound",
   unauthorized: "unauthorized",
-  lengthError: "lengthError",
+  lengthError: "length",
 };
 
 const typeErrorTranslate = {

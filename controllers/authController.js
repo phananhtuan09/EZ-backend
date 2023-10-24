@@ -2,11 +2,13 @@ const {
   handleShowErrorParamsInValid,
   handleShowErrorParamsDuplicate,
   generateUniqueID,
+  helperReturnURLImage,
   customValidateParamsRequest,
 } = require("../utils/helperFunctions");
 const responseMessage = require("../constants/responseMessage");
 const db = require("../config/connectDatabase");
 const enumParamsRequest = require("../constants/enumParamsRequest");
+const { typeImageStorage } = require("../constants/enumImage");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -148,7 +150,8 @@ const handleRegister = async (req, res) => {
               phone: phone,
               email: email.toLowerCase(),
               role: {},
-              accessToken: `Bearer ${accessToken}`,
+              accessToken,
+              avatar: "",
             },
             error: null,
           });
@@ -211,7 +214,7 @@ const handleLogin = async (req, res) => {
       [emailOrPhone.toLowerCase(), emailOrPhone.toLowerCase()]
     );
     if (!Array.isArray(matchUser) || matchUser.length === 0) {
-      // Email or user not exist in DB
+      // User not exist in DB
       return res.status(404).json({
         success: false,
         message: "Thông tin đăng nhập không chính xác",
@@ -271,6 +274,11 @@ const handleLogin = async (req, res) => {
       { expiresIn: "3d" }
     );
 
+    const urlAvatar = await helperReturnURLImage(
+      matchUser[0].avatar,
+      typeImageStorage.avatar
+    );
+
     return res
       .status(200)
       .cookie("refreshToken", refreshToken, {
@@ -289,6 +297,7 @@ const handleLogin = async (req, res) => {
           email: matchUser[0].email,
           role: {},
           accessToken,
+          avatar: urlAvatar,
         },
         error: null,
       });
