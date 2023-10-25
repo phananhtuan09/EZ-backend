@@ -300,6 +300,10 @@ const returnMessageForMulter = (errorCode) => {
   }
 };
 
+const generateOtp = () => {
+  return (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000).toString();
+};
+
 module.exports = {
   handleShowErrorParamsInValid,
   handleShowErrorParamsDuplicate,
@@ -307,4 +311,5 @@ module.exports = {
   customValidateParamsRequest,
   helperReturnURLImage,
   returnMessageForMulter,
+  generateOtp,
 };

@@ -29,14 +29,4 @@ router.get("/refreshToken", (req, res) => {
   });
 });
 
-router.post("/resetPassword", (req, res) => {
-  // Implement password reset logic here
-  res.status(200).json({
-    success: true,
-    message: "Password reset successful",
-    data: null,
-    error: null,
-  });
-});
-
 module.exports = router;
