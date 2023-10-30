@@ -2,6 +2,7 @@ const {
   handleShowErrorParamsInValid,
   customValidateParamsRequest,
   generateOtp,
+  helperResponse,
 } = require("../utils/helperFunctions");
 const responseMessage = require("../constants/responseMessage");
 const db = require("../config/connectDatabase");
@@ -27,10 +28,8 @@ const handleForgotPassword = async (req, res) => {
     });
 
     if (errorInvalid && errorInvalid.message) {
-      return res.status(400).json({
-        success: false,
+      return helperResponse(res, 400, {
         message: errorInvalid.message,
-        data: null,
         error: errorInvalid.error || null,
       });
     }
@@ -41,10 +40,8 @@ const handleForgotPassword = async (req, res) => {
     );
 
     if (!Array.isArray(matchUser) || matchUser.length === 0) {
-      return res.status(400).json({
-        success: false,
+      return helperResponse(res, 404, {
         message: "Email không tồn tại trong hệ thống",
-        data: null,
         error: {
           typeError: enumParamsRequest.typeErrorKey.notFoundError,
           paramsError: ["email"],
@@ -54,11 +51,9 @@ const handleForgotPassword = async (req, res) => {
 
     if (!matchUser[0].isActive) {
       // Account disabled
-      return res.status(403).json({
-        success: false,
+      return helperResponse(res, 403, {
         message:
           "Tài khoản đã bị khoá. Vui lòng liên hệ admin để biết thêm chi tiết",
-        data: null,
         error: {
           typeError: enumParamsRequest.typeErrorKey.unauthorized,
           paramsError: ["email"],
@@ -70,18 +65,14 @@ const handleForgotPassword = async (req, res) => {
       `delayTime-sendMail-${matchUser[0].userID}`
     );
     if (isDelaySendMail) {
-      return res.status(400).json({
-        success: false,
+      return helperResponse(res, 400, {
         message: "Vui lòng thử lại sau một phút",
-        data: null,
-        error: null,
       });
     }
 
     const newOtp = generateOtp();
 
     redis.set(`otp-forgot-password-${matchUser[0].userID}`, newOtp, "EX", 60);
-    redis.set(`delayTime-sendMail-${matchUser[0].userID}`, true, "EX", 60);
 
     const sendEmailResults = await sendEmail(
       email,
@@ -91,26 +82,19 @@ const handleForgotPassword = async (req, res) => {
     );
 
     if (sendEmailResults.success) {
-      return res.status(200).json({
+      redis.set(`delayTime-sendMail-${matchUser[0].userID}`, true, "EX", 60);
+      return helperResponse(res, 200, {
         success: true,
         message: "Vui lòng try cập mail để lấy mã otp",
-        data: null,
-        error: null,
       });
     }
 
-    return res.status(500).json({
-      success: false,
+    return helperResponse(res, 500, {
       message: "Có lỗi xảy ra! Vui lòng thử lại sau",
-      data: null,
-      error: null,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
+    return helperResponse(res, 500, {
       message: error.message || responseMessage.ERROR_SERVER,
-      data: null,
-      error: null,
     });
   }
 };

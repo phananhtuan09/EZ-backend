@@ -7,6 +7,7 @@ const {
   handleShowErrorParamsInValid,
   customValidateParamsRequest,
   helperReturnURLImage,
+  helperResponse,
 } = require("../utils/helperFunctions");
 const enumParamsRequest = require("../constants/enumParamsRequest");
 const db = require("../config/connectDatabase");
@@ -17,10 +18,8 @@ const handleUpdateAvatar = async (req, res) => {
     const { userID } = req.body;
     if (req.avatarError === errorParamAvatar.invalidExtension) {
       // Response error invalid file upload
-      return res.status(400).json({
-        success: false,
+      return helperResponse(res, 400, {
         message: "Vui lòng chọn ảnh có đuôi là .jpg, .jpeg, .png",
-        data: null,
         error: {
           typeError: errorParamAvatar.invalidExtension,
           paramsError: "file",
@@ -29,10 +28,8 @@ const handleUpdateAvatar = async (req, res) => {
     }
 
     if (req.avatarError === errorParamAvatar.invalidMaxSize) {
-      return res.status(400).json({
-        success: false,
+      return helperResponse(res, 400, {
         message: "Vui lòng chọn ảnh dưới 3 mb",
-        data: null,
         error: {
           typeError: errorParamAvatar.invalidMaxSize,
           paramsError: "file",
@@ -51,10 +48,8 @@ const handleUpdateAvatar = async (req, res) => {
     });
 
     if (errorInvalid && errorInvalid.message) {
-      return res.status(400).json({
-        success: false,
+      return helperResponse(res, 400, {
         message: errorInvalid.message,
-        data: null,
         error: errorInvalid.error || null,
       });
     }
@@ -66,10 +61,8 @@ const handleUpdateAvatar = async (req, res) => {
 
     if (!Array.isArray(matchUser) || matchUser.length === 0) {
       // User not exist in DB
-      return res.status(404).json({
-        success: false,
+      return helperResponse(res, 404, {
         message: "userID không hợp lệ",
-        data: null,
         error: {
           typeError: enumParamsRequest.typeErrorKey.notFoundError,
           paramsError: ["userID"],
@@ -79,10 +72,8 @@ const handleUpdateAvatar = async (req, res) => {
 
     if (!matchUser[0].isActive) {
       // Account disabled
-      return res.status(403).json({
-        success: false,
+      return helperResponse(res, 403, {
         message: "Không thể cập nhật tài khoản đã bị khoá",
-        data: null,
         error: {
           typeError: enumParamsRequest.typeErrorKey.unauthorized,
           paramsError: ["isActive"],
@@ -104,28 +95,21 @@ const handleUpdateAvatar = async (req, res) => {
         avatarName,
         typeImageStorage.avatar
       );
-      return res.status(200).json({
+      return helperResponse(res, 200, {
         success: true,
         message: "Cập nhật ảnh đại diện thành công",
         data: {
           avatar: urlAvatar,
         },
-        error: null,
       });
     }
 
-    return res.status(500).json({
-      success: false,
+    return helperResponse(res, 500, {
       message: responseMessage.ERROR_SERVER,
-      data: null,
-      error: null,
     });
   } catch (error) {
-    return res.status(500).json({
-      success: false,
+    return helperResponse(res, 500, {
       message: error.message || responseMessage.ERROR_SERVER,
-      data: null,
-      error: null,
     });
   }
 };

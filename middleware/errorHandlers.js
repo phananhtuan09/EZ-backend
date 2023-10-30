@@ -1,7 +1,10 @@
 const multer = require("multer");
 
 const responseMessage = require("../constants/responseMessage");
-const { returnMessageForMulter } = require("../utils/helperFunctions");
+const {
+  returnMessageForMulter,
+  helperResponse,
+} = require("../utils/helperFunctions");
 
 /*
   Catch Errors Handler
@@ -30,11 +33,8 @@ const notFound = (req, res, next) => {
   if (process.env.IS_WRITE_LOG_FILE === "true") {
     logger.error(`Request for ${req.url} not found`);
   }
-  res.status(404).json({
-    success: false,
+  return helperResponse(res, 404, {
     message: responseMessage.PATH_NOT_FOUND,
-    data: null,
-    error: null,
   });
 };
 
@@ -69,10 +69,8 @@ const commonErrors = (err, req, res, next) => {
 const developmentErrors = (err, req, res, next) => {
   const commonErrorsResults = commonErrors(err, req, res, next);
   if (commonErrorsResults) {
-    return res.status(400).json({
-      success: false,
+    return helperResponse(res, 400, {
       message: commonErrorsResults.message,
-      data: null,
       error: commonErrorsResults.errorDetails,
     });
   }
@@ -86,10 +84,8 @@ const developmentErrors = (err, req, res, next) => {
     ),
   };
 
-  return res.status(500).json({
-    success: false,
+  return helperResponse(res, 500, {
     message: responseMessage.ERROR_SERVER,
-    data: null,
     error: errorDetails,
   });
 };
@@ -102,18 +98,14 @@ const developmentErrors = (err, req, res, next) => {
 const productionErrors = (err, req, res, next) => {
   const commonErrorsResults = commonErrors(err, req, res, next);
   if (commonErrorsResults) {
-    return res.status(400).json({
-      success: false,
+    return helperResponse(res, 400, {
       message: commonErrorsResults.message,
-      data: null,
       error: commonErrorsResults.errorDetails,
     });
   }
 
-  res.status(500).json({
-    success: false,
+  return helperResponse(res, 500, {
     message: responseMessage.ERROR_SERVER,
-    data: null,
     error: err,
   });
 };

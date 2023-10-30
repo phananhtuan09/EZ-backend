@@ -7,6 +7,10 @@ const {
   errorParamAvatar,
 } = require("../constants/enumImage");
 
+const isObject = (obj) => {
+  return obj != null && obj?.constructor?.name === "Object";
+};
+
 // Check if a value is required and not empty
 const checkRequired = (value) => {
   if (value === null || value === undefined) {
@@ -18,7 +22,11 @@ const checkRequired = (value) => {
   if (Array.isArray(value) && value.length === 0) {
     return false;
   }
-  if (typeof value === "object" && Object.keys(value).length === 0) {
+  if (
+    typeof value === "object" &&
+    isObject(value) &&
+    Object.keys(value).length === 0
+  ) {
     return false;
   }
   return true;
@@ -35,11 +43,7 @@ const checkTypeValue = (value, expectedType) => {
   if (expectedType === "boolean" && typeof value === "boolean") {
     return true;
   }
-  if (
-    expectedType === "object" &&
-    typeof value === "object" &&
-    value !== null
-  ) {
+  if (expectedType === "object" && isObject(value)) {
     return true;
   }
   if (expectedType === "array" && Array.isArray(value)) {
@@ -304,6 +308,20 @@ const generateOtp = () => {
   return (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000).toString();
 };
 
+const defaultResponseData = {
+  success: false,
+  message: "",
+  data: null,
+  error: null,
+};
+
+const helperResponse = (res, statusCode, dataResponse) => {
+  return res.status(statusCode).json({
+    ...defaultResponseData,
+    ...dataResponse,
+  });
+};
+
 module.exports = {
   handleShowErrorParamsInValid,
   handleShowErrorParamsDuplicate,
@@ -312,4 +330,5 @@ module.exports = {
   helperReturnURLImage,
   returnMessageForMulter,
   generateOtp,
+  helperResponse,
 };
