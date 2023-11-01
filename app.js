@@ -13,7 +13,8 @@ const errorHandlers = require("./middleware/errorHandlers");
 const { infoLogger } = require("./middleware/logger");
 const swaggerOptions = require("./config/swaggerOptions");
 const authRouter = require("./routes/authRouter");
-const imageRouter = require("./routes/imageRouter");
+const userRouter = require("./routes/userRouter");
+const forgotPasswordRouter = require("./routes/forgotPasswordRouter");
 const verifyAccessToken = require("./middleware/verifyAccessToken");
 const { createUploadsAvatarDirectory } = require("./middleware/directorySetup");
 
@@ -63,10 +64,10 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
 app.use("/swagger", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 // Routing
-app.use("/api", authRouter);
+app.use("/api", authRouter, forgotPasswordRouter);
 
 // Protected routes
-app.use("/api", verifyAccessToken, imageRouter);
+app.use("/api", verifyAccessToken, userRouter);
 
 // Handle Error 404 Not Found
 app.use(errorHandlers.notFound);

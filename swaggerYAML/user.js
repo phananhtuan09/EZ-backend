@@ -1,53 +1,19 @@
 /* istanbul ignore file */
 
-// Define schema
-/**
- * @swagger
- * components:
- *   schemas:
- *     User:
- *       type: object
- *       properties:
- *         userID:
- *           type: string
- *           required: true
- *         userName:
- *           type: string
- *         password:
- *           type: string
- *         phone:
- *           type: string
- *         avatar:
- *           type: string
- *         email:
- *           type: string
- *         role:
- *           type: object
- *         isActive:
- *           type: boolean
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
- */
-
 // Define schema for response/requestBody/parameters api
 /**
  * @swagger
  * definitions:
- *   requestBodyLogin:
- *     required:
- *       - emailOrPhone
- *       - password
+ *   requestUpdateAvatar:
+ *     type: object
  *     properties:
- *       emailOrPhone:
+ *       file:
  *         type: string
- *       password:
+ *         format: binary
+ *       userID:
  *         type: string
  *
- *   responseLogin:
+ *   responseUpdateAvatar:
  *     properties:
  *       success:
  *         type: boolean
@@ -56,72 +22,52 @@
  *       data:
  *         type: object
  *         properties:
- *           userID:
- *             type: string
- *           userName:
- *             type: string
- *           phone:
- *             type: string
- *           email:
- *            type: string
  *           avatar:
- *            type: string
- *           role:
- *             type: object
- *           accessToken:
  *             type: string
  *       error:
  *         type: string
  *
- *   requestBodyRegister:
- *     required:
- *       - userName
- *       - password
+ *   requestForgotPassword:
+ *     type: object
  *     properties:
- *       userName:
- *         type: string
- *       password:
- *         type: string
- *       phone:
- *         type: string
  *       email:
  *         type: string
  *
- *   responseRegister:
+ *   responseForgotPassword:
+ *     type: object
  *     properties:
  *       success:
  *         type: boolean
  *       message:
  *         type: string
+ *       data:
+ *         type: object
+ *       error:
+ *         type: string
+ *
+ *
+ *   requestVerifyOtpForgotPassword:
+ *     type: object
+ *     properties:
+ *       email:
+ *         type: string
+ *       otp:
+ *         type: string
+ *
+ *   responseVerifyOtpForgotPassword:
+ *     type: object
+ *     properties:
+ *       success:
+ *         type: boolean
  *       data:
  *         type: object
  *         properties:
  *           userID:
  *             type: string
- *           userName:
- *             type: string
- *           phone:
- *             type: string
- *           email:
- *            type: string
- *           role:
- *             type: object
  *           accessToken:
  *             type: string
- *       error:
- *         type: string
+
  *
- *   responseRefreshToken:
- *     properties:
- *       success:
- *         type: boolean
- *       message:
- *         type: string
- *       data:
- *         type: object
- *         properties:
- *           accessToken:
- *             type: string
  *       error:
  *         type: string
  *
@@ -131,89 +77,72 @@
 /**
  * @swagger
  * tags:
- *   name: Authentication
+ *   name: User
  */
 
 // Define api
 /**
  * @swagger
- * /api/login:
+ * /api/updateAvatar:
  *   post:
- *     tags: [Authentication]
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             $ref: '#/definitions/requestUpdateAvatar'
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/definitions/responseUpdateAvatar'
+ */
+
+/**
+ * @swagger
+ * /api/forgotPassword:
+ *   post:
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/definitions/requestBodyLogin'
+ *             $ref: '#/definitions/requestForgotPassword'
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               $ref: '#/definitions/responseLogin'
+ *               $ref: '#definitions/responseForgotPassword'
+ *
  */
 
 /**
  * @swagger
- * /api/register:
+ * /api/verifyOtpForgotPassword:
  *   post:
- *     tags: [Authentication]
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/definitions/requestBodyRegister'
- *     responses:
- *       201:
- *         description: Success
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               $ref: '#/definitions/responseRegister'
- */
-
-/**
- * @swagger
- * /api/logout:
- *   post:
- *     tags: [Authentication]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Success
- */
-
-/**
- * @swagger
- * /api/refreshToken:
- *   get:
- *     tags: [Authentication]
- *     security:
- *       - bearerAuth: []
+ *             $ref: '#/definitions/requestVerifyOtpForgotPassword'
+ *
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               $ref: '#/definitions/responseRefreshToken'
- */
-
-/**
- * @swagger
- * /api/resetPassword:
- *   post:
- *     tags: [Authentication]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Success
+ *               $ref: '#/definitions/responseVerifyOtpForgotPassword'
+ *
  */

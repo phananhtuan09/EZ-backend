@@ -4,6 +4,7 @@ const {
   generateUniqueID,
   helperReturnURLImage,
   customValidateParamsRequest,
+  helperResponse,
 } = require("../utils/helperFunctions");
 const responseMessage = require("../constants/responseMessage");
 const db = require("../config/connectDatabase");
@@ -54,10 +55,8 @@ const handleRegister = async (req, res) => {
   });
 
   if (errorInvalid && errorInvalid.message) {
-    return res.status(400).json({
-      success: false,
+    return helperResponse(res, 400, {
       message: errorInvalid.message,
-      data: null,
       error: errorInvalid.error || null,
     });
   }
@@ -80,10 +79,8 @@ const handleRegister = async (req, res) => {
       }
     );
 
-    return res.status(409).json({
-      success: false,
+    return helperResponse(res, 409, {
       message: errorDuplicate.message || "Email hoặc số điện thoại đã tồn tại",
-      data: null,
       error: errorDuplicate.error || null,
     });
   }
@@ -158,18 +155,12 @@ const handleRegister = async (req, res) => {
       }
     }
 
-    return res.status(400).json({
-      success: false,
+    return helperResponse(res, 400, {
       message: "Không thể đăng ký tài khoản và lúc này",
-      data: null,
-      error: null,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
+    return helperResponse(res, 500, {
       message: error.message || responseMessage.ERROR_SERVER,
-      data: null,
-      error: null,
     });
   }
 };
@@ -200,10 +191,8 @@ const handleLogin = async (req, res) => {
   });
 
   if (errorInvalid && errorInvalid.message) {
-    return res.status(400).json({
-      success: false,
+    return helperResponse(res, 400, {
       message: errorInvalid.message,
-      data: null,
       error: errorInvalid.error || null,
     });
   }
@@ -215,10 +204,8 @@ const handleLogin = async (req, res) => {
     );
     if (!Array.isArray(matchUser) || matchUser.length === 0) {
       // User not exist in DB
-      return res.status(404).json({
-        success: false,
-        message: "Thông tin đăng nhập không chính xác",
-        data: null,
+      return helperResponse(res, 404, {
+        message: responseMessage.LOGIN_NOT_FOUND,
         error: {
           typeError: enumParamsRequest.typeErrorKey.notFoundError,
           paramsError: ["emailOrPhone"],
@@ -229,10 +216,8 @@ const handleLogin = async (req, res) => {
     //Evaluate password
     const matchPassword = await bcrypt.compare(password, matchUser[0].password);
     if (!matchPassword) {
-      return res.status(404).json({
-        success: false,
-        message: "Thông tin đăng nhập không chính xác",
-        data: null,
+      return helperResponse(res, 404, {
+        message: responseMessage.LOGIN_NOT_FOUND,
         error: {
           typeError: enumParamsRequest.typeErrorKey.notFoundError,
           paramsError: ["password"],
@@ -241,11 +226,9 @@ const handleLogin = async (req, res) => {
     }
     if (!matchUser[0].isActive) {
       // Account disabled
-      return res.status(403).json({
-        success: false,
+      return helperResponse(res, 403, {
         message:
           "Tài khoản đã bị khoá. Vui lòng liên hệ admin để biết thêm chi tiết",
-        data: null,
         error: {
           typeError: enumParamsRequest.typeErrorKey.unauthorized,
           paramsError: ["emailOrPhone", "password"],
@@ -302,11 +285,8 @@ const handleLogin = async (req, res) => {
         error: null,
       });
   } catch (error) {
-    res.status(500).json({
-      success: false,
+    return helperResponse(res, 500, {
       message: error.message || responseMessage.ERROR_SERVER,
-      data: null,
-      error: null,
     });
   }
 };
