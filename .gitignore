@@ -135,3 +135,6 @@ resquest.http
 
 # Folder logs
 logs/
+
+# VS code config
+.vscode/
