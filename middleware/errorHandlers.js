@@ -6,6 +6,8 @@ const {
   helperResponse,
 } = require("../utils/helperFunctions");
 
+const { logger } = require("./logger");
+
 /*
   Catch Errors Handler
 
